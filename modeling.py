@@ -20,24 +20,27 @@ from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
+#One more preprocessing step for one hot encoding of categorical variables
+X_scaled_dummy = pd.get_dummies(X_scaled)
+
 #Time to model. Let's try Logistic Regression first
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
 logreg = LogisticRegression()
-logreg_cv = cross_val_score(estimator = logreg, X_scaled, y, cv = 5)
+logreg_cv = cross_val_score(estimator = logreg, X_scaled_dummies, y, cv = 5)
 print(logreg_cv)
 
 #We can also try a Random Forest model
 from skearn.ensemble import RandomForestClassifier
 rf = RandomForestClassifier()
-rf_cv = cross_val_score(estimator = rf, X_scaled, y, cv = 5)
+rf_cv = cross_val_score(estimator = rf, X_scaled_dummies, y, cv = 5)
 print(rf_cv)
 
 #Further models could be explored, but for now these two will suffice
 ##Since Random Forest performed better out of the box. Let's tune its hyperparameters
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import RandomizedSearchCV
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size = 0.2, random_state = 12, stratify = y
+X_train, X_test, y_train, y_test = train_test_split(X_scaled_dummies, y, test_size = 0.2, random_state = 12, stratify = y
 estimator_space = np.arange(50, 500, 50)
 depth_space = np.arange(10,110,10)
 features_space = ['sqrt']
